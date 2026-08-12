@@ -1,0 +1,664 @@
+
+// "use client";
+
+// import { useEffect, useState } from "react";
+// import { api } from "@/lib/api";
+
+// export default function DesignationsPage() {
+//   const [designations, setDesignations] = useState([]);
+//   const [name, setName] = useState("");
+//   const [code, setCode] = useState("");
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState("");
+//   const [showAddForm, setShowAddForm] = useState(false);
+//   const [search, setSearch] = useState("");
+//   const [submitting, setSubmitting] = useState(false);
+
+//   useEffect(() => {
+//     fetchDesignations();
+//   }, []);
+
+//   const fetchDesignations = async () => {
+//     setError("");
+//     setLoading(true);
+//     try {
+//       const res = await api.get("/api/v1/get/designations");
+//       setDesignations(res.data?.data ?? res.data ?? []);
+//     } catch (err) {
+//       setError(err?.response?.data?.detail || err.message || "Unable to fetch designations.");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const addDesignation = async (event) => {
+//     event.preventDefault();
+//     if (!name.trim()) return;
+
+//     setError("");
+//     setSubmitting(true);
+//     try {
+//       await api.post("/api/v1/add/designation", {
+//         designation_name: name.trim(),
+//         designation_code: code.trim() || undefined,
+//       });
+//       setName("");
+//       setCode("");
+//       setShowAddForm(false);
+//       fetchDesignations();
+//     } catch (err) {
+//       setError(err?.response?.data?.detail || err.message || "Unable to add designation.");
+//     } finally {
+//       setSubmitting(false);
+//     }
+//   };
+
+//   const filteredDesignations = designations.filter((desig) => {
+//     const desigName = (
+//       desig.designation_name ||
+//       desig.name ||
+//       desig.title ||
+//       ""
+//     ).toLowerCase();
+//     return desigName.includes(search.toLowerCase());
+//   });
+
+//   return (
+//     <div className="min-h-screen bg-[#f5f6f8] p-6">
+//       {/* Page Header - Zoho style */}
+//       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+//         <div>
+//           <h1 className="text-[22px] font-semibold text-[#1a1a1a]">Designations</h1>
+//           <p className="mt-1 text-sm text-[#6b7280]">
+//             Manage designation master data for your organization
+//           </p>
+//         </div>
+
+//         <button
+//           onClick={() => setShowAddForm(true)}
+//           className="inline-flex items-center gap-2 rounded-md bg-[#E42527] px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-[#c91f21] focus:outline-none focus:ring-2 focus:ring-[#E42527]/40"
+//         >
+//           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+//             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+//           </svg>
+//           Add Designation
+//         </button>
+//       </div>
+
+//       {/* Main Card */}
+//       <div className="overflow-hidden rounded-lg border border-[#e5e7eb] bg-white shadow-sm">
+//         {/* Toolbar */}
+//         <div className="flex flex-col gap-3 border-b border-[#e5e7eb] bg-white px-5 py-3.5 sm:flex-row sm:items-center sm:justify-between">
+//           <div className="relative w-full max-w-xs">
+//             <svg
+//               className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9ca3af]"
+//               fill="none"
+//               viewBox="0 0 24 24"
+//               stroke="currentColor"
+//               strokeWidth={2}
+//             >
+//               <path
+//                 strokeLinecap="round"
+//                 strokeLinejoin="round"
+//                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+//               />
+//             </svg>
+//             <input
+//               type="text"
+//               value={search}
+//               onChange={(e) => setSearch(e.target.value)}
+//               placeholder="Search designations..."
+//               className="w-full rounded-md border border-[#d1d5db] bg-white py-2 pl-9 pr-3 text-sm text-[#1a1a1a] placeholder:text-[#9ca3af] focus:border-[#E42527] focus:outline-none focus:ring-1 focus:ring-[#E42527]"
+//             />
+//           </div>
+
+//           <div className="text-sm text-[#6b7280]">
+//             {filteredDesignations.length} designation
+//             {filteredDesignations.length !== 1 ? "s" : ""}
+//           </div>
+//         </div>
+
+//         {/* Table */}
+//         <div className="overflow-x-auto">
+//           {loading ? (
+//             <div className="flex items-center justify-center py-16">
+//               <div className="flex items-center gap-3 text-sm text-[#6b7280]">
+//                 <svg
+//                   className="h-5 w-5 animate-spin text-[#E42527]"
+//                   viewBox="0 0 24 24"
+//                   fill="none"
+//                 >
+//                   <circle
+//                     className="opacity-25"
+//                     cx="12"
+//                     cy="12"
+//                     r="10"
+//                     stroke="currentColor"
+//                     strokeWidth="4"
+//                   />
+//                   <path
+//                     className="opacity-75"
+//                     fill="currentColor"
+//                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+//                   />
+//                 </svg>
+//                 Loading designations...
+//               </div>
+//             </div>
+//           ) : filteredDesignations.length === 0 ? (
+//             <div className="flex flex-col items-center justify-center py-16 text-center">
+//               <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#f3f4f6]">
+//                 <svg
+//                   className="h-6 w-6 text-[#9ca3af]"
+//                   fill="none"
+//                   viewBox="0 0 24 24"
+//                   stroke="currentColor"
+//                   strokeWidth={1.5}
+//                 >
+//                   <path
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                     d="M16.5 7.5V6a2.25 2.25 0 00-2.25-2.25h-4.5A2.25 2.25 0 007.5 6v1.5m9 0v9.75A2.25 2.25 0 0114.25 19.5h-4.5A2.25 2.25 0 017.5 17.25V7.5m9 0h-9"
+//                   />
+//                 </svg>
+//               </div>
+//               <p className="text-sm font-medium text-[#374151]">No designations found</p>
+//               <p className="mt-1 text-sm text-[#6b7280]">
+//                 {search
+//                   ? "Try a different search term"
+//                   : "Get started by adding your first designation"}
+//               </p>
+//               {!search && (
+//                 <button
+//                   onClick={() => setShowAddForm(true)}
+//                   className="mt-4 text-sm font-medium text-[#E42527] hover:underline"
+//                 >
+//                   + Add Designation
+//                 </button>
+//               )}
+//             </div>
+//           ) : (
+//             <table className="w-full text-left text-sm">
+//               <thead>
+//                 <tr className="border-b border-[#e5e7eb] bg-[#f9fafb]">
+//                   <th className="px-5 py-3 font-medium text-[#6b7280]">
+//                     Designation Name
+//                   </th>
+//                   <th className="px-5 py-3 font-medium text-[#6b7280]">Code</th>
+//                   <th className="px-5 py-3 font-medium text-[#6b7280]">Created</th>
+//                   <th className="px-5 py-3 font-medium text-[#6b7280] text-right">
+//                     Actions
+//                   </th>
+//                 </tr>
+//               </thead>
+//               <tbody className="divide-y divide-[#f3f4f6]">
+//                 {filteredDesignations.map((designation, index) => (
+//                   <tr key={index} className="group transition hover:bg-[#fafafa]">
+//                     <td className="px-5 py-3.5">
+//                       <div className="flex items-center gap-3">
+//                         <div className="flex h-8 w-8 items-center justify-center rounded-md bg-[#fef2f2] text-xs font-semibold text-[#E42527]">
+//                           {(
+//                             designation.designation_name ||
+//                             designation.name ||
+//                             designation.title ||
+//                             "D"
+//                           )[0]?.toUpperCase()}
+//                         </div>
+//                         <span className="font-medium text-[#1a1a1a]">
+//                           {designation.designation_name ||
+//                             designation.name ||
+//                             designation.title ||
+//                             `Designation ${index + 1}`}
+//                         </span>
+//                       </div>
+//                     </td>
+//                     <td className="px-5 py-3.5 text-[#6b7280]">
+//                       {designation.designation_code || designation.code || "—"}
+//                     </td>
+//                     <td className="px-5 py-3.5 text-[#6b7280]">
+//                       {designation.created_at
+//                         ? new Date(designation.created_at).toLocaleDateString(
+//                             "en-IN",
+//                             {
+//                               day: "2-digit",
+//                               month: "short",
+//                               year: "numeric",
+//                             }
+//                           )
+//                         : "—"}
+//                     </td>
+//                     <td className="px-5 py-3.5 text-right">
+//                       <button className="rounded p-1.5 text-[#9ca3af] opacity-0 transition hover:bg-[#f3f4f6] hover:text-[#374151] group-hover:opacity-100">
+//                         <svg
+//                           className="h-4 w-4"
+//                           fill="none"
+//                           viewBox="0 0 24 24"
+//                           stroke="currentColor"
+//                           strokeWidth={2}
+//                         >
+//                           <path
+//                             strokeLinecap="round"
+//                             strokeLinejoin="round"
+//                             d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+//                           />
+//                         </svg>
+//                       </button>
+//                     </td>
+//                   </tr>
+//                 ))}
+//               </tbody>
+//             </table>
+//           )}
+//         </div>
+//       </div>
+
+//       {/* Add Designation Modal - Zoho style */}
+//       {showAddForm && (
+//         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+//           <div className="w-full max-w-md overflow-hidden rounded-lg bg-white shadow-xl">
+//             {/* Modal Header */}
+//             <div className="flex items-center justify-between border-b border-[#e5e7eb] px-5 py-4">
+//               <h2 className="text-lg font-semibold text-[#1a1a1a]">
+//                 Add Designation
+//               </h2>
+//               <button
+//                 onClick={() => {
+//                   setShowAddForm(false);
+//                   setError("");
+//                   setName("");
+//                   setCode("");
+//                 }}
+//                 className="rounded p-1 text-[#9ca3af] hover:bg-[#f3f4f6] hover:text-[#374151]"
+//               >
+//                 <svg
+//                   className="h-5 w-5"
+//                   fill="none"
+//                   viewBox="0 0 24 24"
+//                   stroke="currentColor"
+//                   strokeWidth={2}
+//                 >
+//                   <path
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                     d="M6 18L18 6M6 6l12 12"
+//                   />
+//                 </svg>
+//               </button>
+//             </div>
+
+//             {/* Modal Body */}
+//             <form onSubmit={addDesignation} className="p-5">
+//               <div className="space-y-4">
+//                 <div>
+//                   <label className="mb-1.5 block text-sm font-medium text-[#374151]">
+//                     Designation Name <span className="text-[#E42527]">*</span>
+//                   </label>
+//                   <input
+//                     value={name}
+//                     onChange={(e) => setName(e.target.value)}
+//                     required
+//                     autoFocus
+//                     className="w-full rounded-md border border-[#d1d5db] bg-white px-3 py-2.5 text-sm text-[#1a1a1a] placeholder:text-[#9ca3af] focus:border-[#E42527] focus:outline-none focus:ring-1 focus:ring-[#E42527]"
+//                     placeholder="e.g. HR Manager"
+//                   />
+//                 </div>
+
+//                 <div>
+//                   <label className="mb-1.5 block text-sm font-medium text-[#374151]">
+//                     Designation Code
+//                   </label>
+//                   <input
+//                     value={code}
+//                     onChange={(e) => setCode(e.target.value)}
+//                     className="w-full rounded-md border border-[#d1d5db] bg-white px-3 py-2.5 text-sm text-[#1a1a1a] placeholder:text-[#9ca3af] focus:border-[#E42527] focus:outline-none focus:ring-1 focus:ring-[#E42527]"
+//                     placeholder="e.g. HRM"
+//                   />
+//                 </div>
+
+//                 {error && (
+//                   <div className="rounded-md bg-[#fef2f2] px-3 py-2.5 text-sm text-[#b91c1c]">
+//                     {error}
+//                   </div>
+//                 )}
+//               </div>
+
+//               {/* Modal Footer */}
+//               <div className="mt-6 flex items-center justify-end gap-3">
+//                 <button
+//                   type="button"
+//                   onClick={() => {
+//                     setShowAddForm(false);
+//                     setError("");
+//                     setName("");
+//                     setCode("");
+//                   }}
+//                   className="rounded-md border border-[#d1d5db] bg-white px-4 py-2 text-sm font-medium text-[#374151] hover:bg-[#f9fafb]"
+//                 >
+//                   Cancel
+//                 </button>
+//                 <button
+//                   type="submit"
+//                   disabled={submitting || !name.trim()}
+//                   className="rounded-md bg-[#E42527] px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-[#c91f21] disabled:cursor-not-allowed disabled:opacity-60"
+//                 >
+//                   {submitting ? "Submitting..." : "Submit"}
+//                 </button>
+//               </div>
+//             </form>
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
+
+"use client";
+
+import { useEffect, useState } from "react";
+import { api } from "@/lib/api";
+
+const getErrorMessage = (err) => {
+  try {
+    const detail = err?.response?.data?.detail;
+    if (Array.isArray(detail)) {
+      return detail.map((i) => i?.msg || "Validation error").join(", ");
+    }
+    if (typeof detail === "string") return detail;
+    if (detail && typeof detail === "object") {
+      return detail.msg || detail.message || "Request failed";
+    }
+    return err?.message || "Something went wrong";
+  } catch {
+    return "Something went wrong";
+  }
+};
+
+const toArray = (payload) => {
+  try {
+    if (!payload) return [];
+    if (Array.isArray(payload)) return payload;
+    if (Array.isArray(payload?.data)) return payload.data;
+    if (Array.isArray(payload?.designations)) return payload.designations;
+    if (Array.isArray(payload?.results)) return payload.results;
+    if (Array.isArray(payload?.items)) return payload.items;
+    return [];
+  } catch {
+    return [];
+  }
+};
+
+export default function DesignationsPage() {
+  const [designations, setDesignations] = useState([]);
+  const [jobTitle, setJobTitle] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [search, setSearch] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    fetchDesignations();
+  }, []);
+
+  const fetchDesignations = async () => {
+    setError("");
+    setLoading(true);
+    try {
+      const res = await api.get("/api/v1/get/designations");
+      setDesignations(toArray(res?.data));
+    } catch (err) {
+      setError(getErrorMessage(err));
+      setDesignations([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addDesignation = async (event) => {
+    event.preventDefault();
+    if (!jobTitle.trim()) return;
+
+    setError("");
+    setSubmitting(true);
+    try {
+      await api.post("/api/v1/add/designation", {
+        job_title: jobTitle.trim(),
+      });
+      setJobTitle("");
+      setShowAddForm(false);
+      await fetchDesignations();
+    } catch (err) {
+      setError(getErrorMessage(err));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const closeModal = () => {
+    setShowAddForm(false);
+    setError("");
+    setJobTitle("");
+  };
+
+  const list = Array.isArray(designations) ? designations : [];
+
+  const filteredDesignations = list.filter((desig) => {
+    const name = (
+      desig?.job_title ||
+      desig?.designation_name ||
+      desig?.name ||
+      desig?.title ||
+      ""
+    ).toLowerCase();
+    return name.includes((search || "").toLowerCase());
+  });
+
+  return (
+    <div className="min-h-screen bg-[#f5f6f8] p-6">
+      {/* Header */}
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-[22px] font-semibold text-[#1a1a1a]">Designations</h1>
+          <p className="mt-1 text-sm text-[#6b7280]">
+            Manage designation master data for your organization
+          </p>
+        </div>
+
+        <button
+          onClick={() => {
+            setError("");
+            setShowAddForm(true);
+          }}
+          className="inline-flex items-center gap-2 rounded-md bg-[#E42527] px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-[#c91f21]"
+        >
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+          </svg>
+          Add Designation
+        </button>
+      </div>
+
+      {error && !showAddForm && (
+        <div className="mb-4 rounded-md bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c]">
+          {error}
+        </div>
+      )}
+
+      {/* Card */}
+      <div className="overflow-hidden rounded-lg border border-[#e5e7eb] bg-white shadow-sm">
+        <div className="flex flex-col gap-3 border-b border-[#e5e7eb] px-5 py-3.5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="relative w-full max-w-xs">
+            <svg
+              className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9ca3af]"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search designations..."
+              className="w-full rounded-md border border-[#d1d5db] bg-white py-2 pl-9 pr-3 text-sm focus:border-[#E42527] focus:outline-none focus:ring-1 focus:ring-[#E42527]"
+            />
+          </div>
+          <div className="text-sm text-[#6b7280]">
+            {filteredDesignations.length} designation
+            {filteredDesignations.length !== 1 ? "s" : ""}
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          {loading ? (
+            <div className="flex items-center justify-center py-16">
+              <div className="flex items-center gap-3 text-sm text-[#6b7280]">
+                <svg className="h-5 w-5 animate-spin text-[#E42527]" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                Loading designations...
+              </div>
+            </div>
+          ) : filteredDesignations.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#f3f4f6]">
+                <svg className="h-6 w-6 text-[#9ca3af]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 7.5V6a2.25 2.25 0 00-2.25-2.25h-4.5A2.25 2.25 0 007.5 6v1.5m9 0v9.75A2.25 2.25 0 0114.25 19.5h-4.5A2.25 2.25 0 017.5 17.25V7.5m9 0h-9" />
+                </svg>
+              </div>
+              <p className="text-sm font-medium text-[#374151]">No designations found</p>
+              <p className="mt-1 text-sm text-[#6b7280]">
+                {search ? "Try a different search term" : "Get started by adding your first designation"}
+              </p>
+              {!search && (
+                <button
+                  onClick={() => setShowAddForm(true)}
+                  className="mt-4 text-sm font-medium text-[#E42527] hover:underline"
+                >
+                  + Add Designation
+                </button>
+              )}
+            </div>
+          ) : (
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="border-b border-[#e5e7eb] bg-[#f9fafb]">
+                  <th className="px-5 py-3 font-medium text-[#6b7280]">Job Title</th>
+                  <th className="px-5 py-3 font-medium text-[#6b7280]">Created</th>
+                  <th className="px-5 py-3 text-right font-medium text-[#6b7280]">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#f3f4f6]">
+                {filteredDesignations.map((designation, index) => (
+                  <tr
+                    key={designation?.designation_id || designation?.id || index}
+                    className="group transition hover:bg-[#fafafa]"
+                  >
+                    <td className="px-5 py-3.5">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-md bg-[#fef2f2] text-xs font-semibold text-[#E42527]">
+                          {(
+                            designation?.job_title ||
+                            designation?.designation_name ||
+                            designation?.name ||
+                            "D"
+                          )[0]?.toUpperCase()}
+                        </div>
+                        <span className="font-medium text-[#1a1a1a]">
+                          {designation?.job_title ||
+                            designation?.designation_name ||
+                            designation?.name ||
+                            designation?.title ||
+                            `Designation ${index + 1}`}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-5 py-3.5 text-[#6b7280]">
+                      {designation?.created_at
+                        ? new Date(designation.created_at).toLocaleDateString("en-IN", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          })
+                        : "—"}
+                    </td>
+                    <td className="px-5 py-3.5 text-right">
+                      <button
+                        type="button"
+                        className="rounded p-1.5 text-[#9ca3af] opacity-0 transition hover:bg-[#f3f4f6] hover:text-[#374151] group-hover:opacity-100"
+                      >
+                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
+
+      {/* Modal */}
+      {showAddForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-md overflow-hidden rounded-lg bg-white shadow-xl">
+            <div className="flex items-center justify-between border-b border-[#e5e7eb] px-5 py-4">
+              <h2 className="text-lg font-semibold text-[#1a1a1a]">Add Designation</h2>
+              <button type="button" onClick={closeModal} className="rounded p-1 text-[#9ca3af] hover:bg-[#f3f4f6]">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <form onSubmit={addDesignation} className="p-5">
+              <div className="space-y-4">
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium text-[#374151]">
+                    Job Title <span className="text-[#E42527]">*</span>
+                  </label>
+                  <input
+                    value={jobTitle}
+                    onChange={(e) => setJobTitle(e.target.value)}
+                    required
+                    autoFocus
+                    className="w-full rounded-md border border-[#d1d5db] px-3 py-2.5 text-sm focus:border-[#E42527] focus:outline-none focus:ring-1 focus:ring-[#E42527]"
+                    placeholder="e.g. HR Manager"
+                  />
+                </div>
+
+                {error && (
+                  <div className="rounded-md bg-[#fef2f2] px-3 py-2.5 text-sm text-[#b91c1c]">
+                    {error}
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-6 flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="rounded-md border border-[#d1d5db] bg-white px-4 py-2 text-sm font-medium text-[#374151] hover:bg-[#f9fafb]"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={submitting || !jobTitle.trim()}
+                  className="rounded-md bg-[#E42527] px-4 py-2 text-sm font-medium text-white hover:bg-[#c91f21] disabled:opacity-60"
+                >
+                  {submitting ? "Submitting..." : "Submit"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
