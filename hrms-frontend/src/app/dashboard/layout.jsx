@@ -52,7 +52,7 @@ import Sidebar from "@/components/dashboard/sidebar";
 import Topbar from "@/components/dashboard/topbar";
 
 export const metadata = {
-  title: "Dashboard | EZlikfe HRMS",
+  title: "Dashboard | EZlife HRMS",
   description: "HRMS dashboard",
 };
 

@@ -10,11 +10,13 @@ export const useAuthStore = create(
       setAuth: (user, accessToken, refreshToken) => {
         localStorage.setItem("access_token", accessToken);
         localStorage.setItem("refresh_token", refreshToken);
+        localStorage.setItem("user", JSON.stringify(user || {}));
         set({ user, accessToken, refreshToken });
       },
       logout: () => {
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
+        localStorage.removeItem("user");
         set({ user: null, accessToken: null, refreshToken: null });
       },
     }),

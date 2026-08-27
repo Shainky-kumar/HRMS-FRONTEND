@@ -26,7 +26,7 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "EZlikfe HRMS",
+  title: "EZlife HRMS",
   description: "HRMS dashboard",
 };
 
