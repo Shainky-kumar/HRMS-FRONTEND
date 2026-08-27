@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { api } from "@/lib/api";
+import { useAuthStore } from "@/store/authStore";
 
 const formatApiError = (err) => {
   const detail = err?.response?.data?.detail;
@@ -11,8 +12,14 @@ const formatApiError = (err) => {
 };
 
 export default function OvertimePage() {
+  const user = useAuthStore((state) => state.user);
+  const employeeId =
+    user?.employee_id ||
+    user?.employeeId ||
+    user?.emp_id ||
+    user?.employee?.employee_id ||
+    "";
   const [form, setForm] = useState({
-    employee_id: "",
     attendance_date: "",
     requested_minutes: "",
     reason: "",
@@ -24,18 +31,22 @@ export default function OvertimePage() {
 
   const create = async (e) => {
     e.preventDefault();
+    if (!employeeId) {
+      setError("Logged-in employee profile is not linked to an employee.");
+      return;
+    }
     setSaving(true);
     setError("");
     setSuccess("");
     try {
       await api.post("/api/v1/create/overtime", {
-        employee_id: form.employee_id,
+        employee_id: employeeId,
         attendance_date: form.attendance_date,
         requested_minutes: Number(form.requested_minutes),
         reason: form.reason || null,
       });
       setSuccess("Overtime request created");
-      setForm({ employee_id: "", attendance_date: "", requested_minutes: "", reason: "" });
+      setForm({ attendance_date: "", requested_minutes: "", reason: "" });
     } catch (err) {
       setError(formatApiError(err));
     } finally {
@@ -73,7 +84,6 @@ export default function OvertimePage() {
           <h2 className="text-sm font-semibold text-[#374151]">Create Request</h2>
         </div>
         <form onSubmit={create} className="grid gap-4 p-5 sm:grid-cols-2">
-          <input required placeholder="Employee ID" value={form.employee_id} onChange={(e) => setForm((p) => ({ ...p, employee_id: e.target.value }))} className="rounded-md border border-[#d1d5db] px-3 py-2.5 text-sm" />
           <input required type="date" value={form.attendance_date} onChange={(e) => setForm((p) => ({ ...p, attendance_date: e.target.value }))} className="rounded-md border border-[#d1d5db] px-3 py-2.5 text-sm" />
           <input required type="number" placeholder="Requested minutes" value={form.requested_minutes} onChange={(e) => setForm((p) => ({ ...p, requested_minutes: e.target.value }))} className="rounded-md border border-[#d1d5db] px-3 py-2.5 text-sm" />
           <input placeholder="Reason" value={form.reason} onChange={(e) => setForm((p) => ({ ...p, reason: e.target.value }))} className="rounded-md border border-[#d1d5db] px-3 py-2.5 text-sm" />

@@ -3,8 +3,15 @@
 import { useState } from "react";
 import { api } from "@/lib/api";
 
+// ---------------------------------------------
+// Matches backend:
+//   POST /api/v1/payroll/run
+// Body matches schemas.RunPayrollRequest exactly.
+// ---------------------------------------------
+
 function getErrorMessage(err) {
   const detail = err?.response?.data?.detail;
+  if (Array.isArray(detail)) return detail.map((i) => i?.msg || "Error").join(", ");
   if (typeof detail === "string") return detail;
   return err?.message || "Something went wrong";
 }
@@ -13,6 +20,7 @@ export default function RunPayrollPage() {
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth() + 1);
+  const [runName, setRunName] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
@@ -23,7 +31,11 @@ export default function RunPayrollPage() {
     setError("");
     setResult(null);
     try {
-      const res = await api.post("/api/v1/run/payroll", { year: Number(year), month: Number(month) });
+      const res = await api.post("/api/v1/payroll/run", {
+        year: Number(year),
+        month: Number(month),
+        run_name: runName || null,
+      });
       setResult(res?.data ?? res);
     } catch (err) {
       setError(getErrorMessage(err));
@@ -31,6 +43,8 @@ export default function RunPayrollPage() {
       setLoading(false);
     }
   }
+
+  const defaultRunName = `${new Date(2000, month - 1, 1).toLocaleString("default", { month: "long" })} ${year} Payroll`;
 
   return (
     <div className="min-h-screen bg-[#f5f6f8] p-6">
@@ -67,6 +81,16 @@ export default function RunPayrollPage() {
             </div>
           </div>
 
+          <div>
+            <label className="mb-1 block text-sm font-medium">Run Name (optional)</label>
+            <input
+              value={runName}
+              onChange={(e) => setRunName(e.target.value)}
+              placeholder={defaultRunName}
+              className="w-full rounded-md border border-[#d1d5db] px-3 py-2.5 text-sm focus:border-[#E42527] focus:outline-none"
+            />
+          </div>
+
           {error && <div className="rounded-md bg-[#fef2f2] px-3 py-2 text-sm text-[#b91c1c]">{error}</div>}
 
           <button
@@ -81,8 +105,8 @@ export default function RunPayrollPage() {
         {result && (
           <div className="mt-6 rounded-md border border-green-200 bg-green-50 p-4 text-sm">
             <p className="font-medium text-green-800">Payroll completed</p>
-            <p className="mt-1 text-green-700">Created: {result.created_count || 0}</p>
-            <p className="text-green-700">Errors: {result.error_count || 0}</p>
+            <p className="mt-1 text-green-700">Created: {result.created_count ?? 0}</p>
+            <p className="text-green-700">Errors: {result.error_count ?? 0}</p>
           </div>
         )}
       </div>

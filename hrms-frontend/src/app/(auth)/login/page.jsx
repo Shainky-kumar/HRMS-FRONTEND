@@ -696,7 +696,7 @@ export default function LoginPage() {
           </h1>
 
           <p className="text-sm text-slate-500">
-            Log in to access your EZlikfe workspace
+            Log in to access your EZlife workspace
           </p>
         </div>
 

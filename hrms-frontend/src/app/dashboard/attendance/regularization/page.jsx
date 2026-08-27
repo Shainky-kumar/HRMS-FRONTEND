@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api";
 
 const formatApiError = (err) => {
@@ -15,13 +15,28 @@ const toArray = (p) => {
   if (Array.isArray(p)) return p;
   if (Array.isArray(p?.data)) return p.data;
   if (Array.isArray(p?.regularizations)) return p.regularizations;
+  if (Array.isArray(p?.employees)) return p.employees;
+  if (Array.isArray(p?.items)) return p.items;
+  if (Array.isArray(p?.results)) return p.results;
   return [];
+};
+
+const getEmployeeId = (employee) =>
+  employee.employee_id || employee.id || employee._id;
+
+const getEmployeeName = (employee) => {
+  const fullName = [employee.first_name, employee.last_name]
+    .filter(Boolean)
+    .join(" ");
+
+  return fullName || employee.name || employee.full_name || getEmployeeId(employee);
 };
 
 const formatDate = (d) => (!d ? "—" : new Date(d).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }));
 
 export default function RegularizationPage() {
   const [list, setList] = useState([]);
+  const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -38,7 +53,21 @@ export default function RegularizationPage() {
   const [filterStatus, setFilterStatus] = useState("");
   const [page, setPage] = useState(1);
 
-  const fetchList = async () => {
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      try {
+        const res = await api.get("/api/v1/get/employees");
+        setEmployees(toArray(res?.data));
+      } catch (err) {
+        setError(formatApiError(err));
+        setEmployees([]);
+      }
+    };
+
+    fetchEmployees();
+  }, []);
+
+  const fetchList = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
@@ -52,11 +81,15 @@ export default function RegularizationPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filterStatus, page]);
 
   useEffect(() => {
-    fetchList();
-  }, [page]);
+    const timeoutId = setTimeout(() => {
+      fetchList();
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
+  }, [fetchList]);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -165,7 +198,18 @@ export default function RegularizationPage() {
               <button onClick={() => setShowForm(false)} className="text-[#9ca3af]">✕</button>
             </div>
             <form onSubmit={submit} className="space-y-4 p-5">
-              <input required placeholder="Employee ID" value={form.employee_id} onChange={(e) => setForm((p) => ({ ...p, employee_id: e.target.value }))} className="w-full rounded-md border border-[#d1d5db] px-3 py-2.5 text-sm" />
+              <select required value={form.employee_id} onChange={(e) => setForm((p) => ({ ...p, employee_id: e.target.value }))} className="w-full rounded-md border border-[#d1d5db] px-3 py-2.5 text-sm">
+                <option value="">Select employee</option>
+                {employees.map((employee) => {
+                  const id = getEmployeeId(employee);
+
+                  return id ? (
+                    <option key={id} value={id}>
+                      {getEmployeeName(employee)} ({id})
+                    </option>
+                  ) : null;
+                })}
+              </select>
               <input required type="date" value={form.attendance_date} onChange={(e) => setForm((p) => ({ ...p, attendance_date: e.target.value }))} className="w-full rounded-md border border-[#d1d5db] px-3 py-2.5 text-sm" />
               <select value={form.requested_status} onChange={(e) => setForm((p) => ({ ...p, requested_status: e.target.value }))} className="w-full rounded-md border border-[#d1d5db] px-3 py-2.5 text-sm">
                 <option value="present">Present</option>

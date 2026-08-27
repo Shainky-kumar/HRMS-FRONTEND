@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { api } from "@/lib/api";
+import { useAuthStore } from "@/store/authStore";
 
 const formatApiError = (err) => {
   const detail = err?.response?.data?.detail;
@@ -28,7 +29,13 @@ const formatDateTime = (d) => {
 };
 
 export default function AttendanceBreaksPage() {
-  const [employeeId, setEmployeeId] = useState("");
+  const user = useAuthStore((state) => state.user);
+  const employeeId =
+    user?.employee_id ||
+    user?.employeeId ||
+    user?.emp_id ||
+    user?.employee?.employee_id ||
+    "";
   const [breakType, setBreakType] = useState("lunch");
   const [breakId, setBreakId] = useState("");
   const [list, setList] = useState([]);
@@ -39,15 +46,15 @@ export default function AttendanceBreaksPage() {
   const [page, setPage] = useState(1);
 
   const loadBreaks = async () => {
-    if (!employeeId.trim()) {
-      setError("Employee ID required");
+    if (!employeeId) {
+      setError("Logged-in employee profile is not linked to an employee.");
       return;
     }
     setLoading(true);
     setError("");
     try {
       const res = await api.get("/api/v1/get/breaks", {
-        params: { employee_id: employeeId.trim(), page, page_size: 10 },
+        params: { employee_id: employeeId, page, page_size: 10 },
       });
       setList(toArray(res?.data));
     } catch (err) {
@@ -59,13 +66,15 @@ export default function AttendanceBreaksPage() {
   };
 
   const startBreak = async () => {
-    if (!employeeId.trim()) return setError("Employee ID required");
+    if (!employeeId) {
+      return setError("Logged-in employee profile is not linked to an employee.");
+    }
     setSaving(true);
     setError("");
     setSuccess("");
     try {
       const res = await api.post("/api/v1/break/start", {
-        employee_id: employeeId.trim(),
+        employee_id: employeeId,
         break_type: breakType || null,
         remarks: null,
       });
@@ -81,12 +90,12 @@ export default function AttendanceBreaksPage() {
   };
 
   const endBreak = async () => {
-    if (!breakId.trim()) return setError("Break ID required to end");
+    if (!breakId) return setError("Start a break before ending it.");
     setSaving(true);
     setError("");
     setSuccess("");
     try {
-      await api.post("/api/v1/break/end", { break_id: breakId.trim() });
+      await api.post("/api/v1/break/end", { break_id: breakId });
       setSuccess("Break ended");
       setBreakId("");
       await loadBreaks();
@@ -113,10 +122,6 @@ export default function AttendanceBreaksPage() {
         </div>
         <div className="flex flex-wrap items-end gap-3 p-5">
           <div>
-            <label className="mb-1 block text-sm font-medium text-[#374151]">Employee ID</label>
-            <input value={employeeId} onChange={(e) => setEmployeeId(e.target.value)} className="rounded-md border border-[#d1d5db] px-3 py-2 text-sm" placeholder="employee_id" />
-          </div>
-          <div>
             <label className="mb-1 block text-sm font-medium text-[#374151]">Break type</label>
             <select value={breakType} onChange={(e) => setBreakType(e.target.value)} className="rounded-md border border-[#d1d5db] px-3 py-2 text-sm">
               <option value="lunch">Lunch</option>
@@ -125,12 +130,8 @@ export default function AttendanceBreaksPage() {
               <option value="other">Other</option>
             </select>
           </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium text-[#374151]">Break ID (for end)</label>
-            <input value={breakId} onChange={(e) => setBreakId(e.target.value)} className="rounded-md border border-[#d1d5db] px-3 py-2 text-sm" placeholder="break_id" />
-          </div>
           <button type="button" disabled={saving} onClick={startBreak} className="rounded-md bg-[#E42527] px-4 py-2 text-sm font-medium text-white hover:bg-[#c91f21] disabled:opacity-60">Start Break</button>
-          <button type="button" disabled={saving} onClick={endBreak} className="rounded-md border border-[#d1d5db] px-4 py-2 text-sm font-medium text-[#374151] hover:bg-[#f9fafb] disabled:opacity-60">End Break</button>
+          <button type="button" disabled={saving || !breakId} onClick={endBreak} className="rounded-md border border-[#d1d5db] px-4 py-2 text-sm font-medium text-[#374151] hover:bg-[#f9fafb] disabled:opacity-60">End Break</button>
           <button type="button" onClick={loadBreaks} className="rounded-md border border-[#d1d5db] px-4 py-2 text-sm font-medium text-[#374151] hover:bg-[#f9fafb]">Load List</button>
         </div>
       </div>

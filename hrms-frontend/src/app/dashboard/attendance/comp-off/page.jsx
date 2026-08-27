@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api";
+import { useAuthStore } from "@/store/authStore";
 
 const formatApiError = (err) => {
   const detail = err?.response?.data?.detail;
@@ -21,6 +22,13 @@ const toArray = (p) => {
 const formatDate = (d) => (!d ? "—" : new Date(d).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }));
 
 export default function CompOffPage() {
+  const user = useAuthStore((state) => state.user);
+  const employeeId =
+    user?.employee_id ||
+    user?.employeeId ||
+    user?.emp_id ||
+    user?.employee?.employee_id ||
+    "";
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -29,7 +37,6 @@ export default function CompOffPage() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [form, setForm] = useState({
-    employee_id: "",
     earned_date: "",
     attendance_id: "",
     days: "1",
@@ -37,7 +44,7 @@ export default function CompOffPage() {
     remarks: "",
   });
 
-  const fetchList = async () => {
+  const fetchList = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
@@ -51,20 +58,28 @@ export default function CompOffPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, search]);
 
   useEffect(() => {
-    fetchList();
-  }, [page]);
+    const timeoutId = setTimeout(() => {
+      fetchList();
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
+  }, [fetchList]);
 
   const submit = async (e) => {
     e.preventDefault();
+    if (!employeeId) {
+      setError("Logged-in employee profile is not linked to an employee.");
+      return;
+    }
     setSaving(true);
     setError("");
     setSuccess("");
     try {
       await api.post("/api/v1/add/comp_off", {
-        employee_id: form.employee_id,
+        employee_id: employeeId,
         earned_date: form.earned_date,
         attendance_id: form.attendance_id || null,
         days: Number(form.days),
@@ -72,7 +87,7 @@ export default function CompOffPage() {
         remarks: form.remarks || null,
       });
       setSuccess("Comp-off added");
-      setForm({ employee_id: "", earned_date: "", attendance_id: "", days: "1", expiry_date: "", remarks: "" });
+      setForm({ earned_date: "", attendance_id: "", days: "1", expiry_date: "", remarks: "" });
       fetchList();
     } catch (err) {
       setError(formatApiError(err));
@@ -96,7 +111,6 @@ export default function CompOffPage() {
           <h2 className="text-sm font-semibold text-[#374151]">Add Comp-off</h2>
         </div>
         <form onSubmit={submit} className="grid gap-3 p-5 sm:grid-cols-2 lg:grid-cols-3">
-          <input required placeholder="Employee ID" value={form.employee_id} onChange={(e) => setForm((p) => ({ ...p, employee_id: e.target.value }))} className="rounded-md border border-[#d1d5db] px-3 py-2.5 text-sm" />
           <input required type="date" value={form.earned_date} onChange={(e) => setForm((p) => ({ ...p, earned_date: e.target.value }))} className="rounded-md border border-[#d1d5db] px-3 py-2.5 text-sm" />
           <input type="number" step="0.5" placeholder="Days" value={form.days} onChange={(e) => setForm((p) => ({ ...p, days: e.target.value }))} className="rounded-md border border-[#d1d5db] px-3 py-2.5 text-sm" />
           <input type="date" placeholder="Expiry" value={form.expiry_date} onChange={(e) => setForm((p) => ({ ...p, expiry_date: e.target.value }))} className="rounded-md border border-[#d1d5db] px-3 py-2.5 text-sm" />

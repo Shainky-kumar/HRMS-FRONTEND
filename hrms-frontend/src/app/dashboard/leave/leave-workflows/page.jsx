@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api";
 
 const initialForm = {
@@ -24,6 +24,20 @@ const formatApiError = (err) => {
   return err?.message || "Something went wrong";
 };
 
+const getItems = (response) => {
+  const data = response?.data?.data ?? response?.data ?? [];
+
+  if (Array.isArray(data)) return data;
+
+  return data?.items ?? data?.results ?? data?.policies ?? response?.data?.policies ?? [];
+};
+
+const getPolicyId = (policy) =>
+  policy.leave_policy_id || policy.id || policy._id;
+
+const getPolicyName = (policy) =>
+  policy.policy_name || policy.name || getPolicyId(policy);
+
 export default function LeaveApprovalWorkflowsPage() {
   const [list, setList] = useState([]);
   const [formData, setFormData] = useState(initialForm);
@@ -37,16 +51,37 @@ export default function LeaveApprovalWorkflowsPage() {
   const [pageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const [leavePolicyId, setLeavePolicyId] = useState("");
-
-  // Set leavePolicyId from URL params or parent component as needed
-  // Example: const params = useSearchParams(); setLeavePolicyId(params.get("policy_id") || "");
+  const [leavePolicies, setLeavePolicies] = useState([]);
 
   useEffect(() => {
-    if (!leavePolicyId) return;
-    fetchData();
-  }, [page, search, leavePolicyId]);
+    const fetchPolicies = async () => {
+      try {
+        const response = await api.get("/api/v1/leave/policies", {
+          params: { page: 1, page_size: 100 },
+        });
+        const policies = getItems(response);
+        setLeavePolicies(policies);
 
-  const fetchData = async () => {
+        if (!leavePolicyId && policies.length) {
+          setLeavePolicyId(getPolicyId(policies[0]) || "");
+        }
+      } catch (err) {
+        setError(formatApiError(err));
+        setLeavePolicies([]);
+      }
+    };
+
+    fetchPolicies();
+  }, [leavePolicyId]);
+
+  const fetchData = useCallback(async () => {
+    if (!leavePolicyId) {
+      setList([]);
+      setTotal(0);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError("");
     try {
@@ -65,7 +100,15 @@ export default function LeaveApprovalWorkflowsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [leavePolicyId, page, pageSize, search]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      fetchData();
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
+  }, [fetchData]);
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -289,16 +332,29 @@ export default function LeaveApprovalWorkflowsPage() {
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
                     <label className="mb-1.5 block text-sm font-medium text-slate-700">
-                      Leave Policy ID *
+                      Leave Policy *
                     </label>
-                    <input
+                    <select
                       required
-                      value={formData.leave_policy_id || leavePolicyId}
-                      onChange={(e) =>
-                        handleChange("leave_policy_id", e.target.value)
-                      }
+                      value={leavePolicyId}
+                      onChange={(e) => {
+                        setLeavePolicyId(e.target.value);
+                        handleChange("leave_policy_id", e.target.value);
+                        setPage(1);
+                      }}
                       className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-[#E42527] focus:ring-1 focus:ring-[#E42527]/30"
-                    />
+                    >
+                      <option value="">Select leave policy</option>
+                      {leavePolicies.map((policy) => {
+                        const id = getPolicyId(policy);
+
+                        return id ? (
+                          <option key={id} value={id}>
+                            {getPolicyName(policy)}
+                          </option>
+                        ) : null;
+                      })}
+                    </select>
                   </div>
 
                   <div>

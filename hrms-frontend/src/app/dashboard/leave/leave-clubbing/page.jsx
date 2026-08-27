@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api";
 
 const initialForm = {
@@ -22,6 +22,45 @@ const formatApiError = (err) => {
   return err?.message || "Something went wrong";
 };
 
+const getItems = (response) => {
+  const data = response?.data?.data ?? response?.data ?? [];
+
+  if (Array.isArray(data)) return data;
+
+  return data?.items ?? data?.results ?? data?.policies ?? response?.data?.policies ?? data?.leave_types ?? response?.data?.leave_types ?? [];
+};
+
+const getPolicyId = (policy) =>
+  policy.leave_policy_id || policy.id || policy._id;
+
+const getPolicyName = (policy) =>
+  policy.policy_name || policy.name || getPolicyId(policy);
+
+const getLeaveTypeId = (leaveType) =>
+  leaveType.leave_type_id || leaveType.id || leaveType._id;
+
+const getLeaveTypeName = (leaveType) =>
+  leaveType.leave_type_name || leaveType.name || leaveType.type_name || getLeaveTypeId(leaveType);
+
+const fetchLeaveTypes = async () => {
+  const endpoints = [
+    "/api/v1/get/leave/type",
+    "/api/v1/leave/types",
+    "/api/v1/get/leave/types",
+    "/api/v1/get/leave/type/list",
+  ];
+
+  for (const endpoint of endpoints) {
+    try {
+      const response = await api.get(endpoint);
+      return getItems(response);
+    } catch {
+    }
+  }
+
+  return [];
+};
+
 export default function LeaveClubbingRestrictionsPage() {
   const [list, setList] = useState([]);
   const [formData, setFormData] = useState(initialForm);
@@ -35,16 +74,56 @@ export default function LeaveClubbingRestrictionsPage() {
   const [pageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const [leavePolicyId, setLeavePolicyId] = useState("");
-
-  // Set leavePolicyId from URL params or parent component as needed
-  // Example: const params = useSearchParams(); setLeavePolicyId(params.get("policy_id") || "");
+  const [leavePolicies, setLeavePolicies] = useState([]);
+  const [leaveTypes, setLeaveTypes] = useState([]);
 
   useEffect(() => {
-    if (!leavePolicyId) return;
-    fetchData();
-  }, [page, search, leavePolicyId]);
+    const fetchOptions = async () => {
+      try {
+        const [policyResponse, types] = await Promise.all([
+          api.get("/api/v1/leave/policies", {
+            params: { page: 1, page_size: 100 },
+          }),
+          fetchLeaveTypes(),
+        ]);
+        const policies = getItems(policyResponse);
+        const policyTypes = Array.from(
+          new Map(
+            policies
+              .map((policy) => {
+                const id = policy.leave_type_id || policy.leave_type?.leave_type_id;
 
-  const fetchData = async () => {
+                return id
+                  ? [id, {
+                      leave_type_id: id,
+                      leave_type_name: policy.leave_type_name || policy.leave_type?.name || id,
+                    }]
+                  : null;
+              })
+              .filter(Boolean)
+          ).values()
+        );
+
+        setLeavePolicies(policies);
+        setLeaveTypes(types.length ? types : policyTypes);
+      } catch (err) {
+        setError(formatApiError(err));
+        setLeavePolicies([]);
+        setLeaveTypes([]);
+      }
+    };
+
+    fetchOptions();
+  }, []);
+
+  const fetchData = useCallback(async () => {
+    if (!leavePolicyId) {
+      setList([]);
+      setTotal(0);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError("");
     try {
@@ -63,7 +142,15 @@ export default function LeaveClubbingRestrictionsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [leavePolicyId, page, pageSize, search]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      fetchData();
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
+  }, [fetchData]);
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -263,46 +350,79 @@ export default function LeaveClubbingRestrictionsPage() {
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
                     <label className="mb-1.5 block text-sm font-medium text-slate-700">
-                      Leave Policy ID *
+                      Leave Policy *
                     </label>
-                    <input
+                    <select
                       required
-                      value={formData.leave_policy_id || leavePolicyId}
-                      onChange={(e) =>
-                        handleChange("leave_policy_id", e.target.value)
-                      }
+                      value={leavePolicyId}
+                      onChange={(e) => {
+                        setLeavePolicyId(e.target.value);
+                        handleChange("leave_policy_id", e.target.value);
+                        setPage(1);
+                      }}
                       className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-[#E42527] focus:ring-1 focus:ring-[#E42527]/30"
-                    />
+                    >
+                      <option value="">Select leave policy</option>
+                      {leavePolicies.map((policy) => {
+                        const id = getPolicyId(policy);
+
+                        return id ? (
+                          <option key={id} value={id}>
+                            {getPolicyName(policy)}
+                          </option>
+                        ) : null;
+                      })}
+                    </select>
                   </div>
 
                   <div>
                     <label className="mb-1.5 block text-sm font-medium text-slate-700">
-                      Leave Type ID A *
+                      Leave Type A *
                     </label>
-                    <input
+                    <select
                       required
                       value={formData.leave_type_id_a}
                       onChange={(e) =>
                         handleChange("leave_type_id_a", e.target.value)
                       }
-                      placeholder="e.g. CL, PL, SL"
                       className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-[#E42527]"
-                    />
+                    >
+                      <option value="">Select leave type</option>
+                      {leaveTypes.map((leaveType) => {
+                        const id = getLeaveTypeId(leaveType);
+
+                        return id ? (
+                          <option key={id} value={id}>
+                            {getLeaveTypeName(leaveType)}
+                          </option>
+                        ) : null;
+                      })}
+                    </select>
                   </div>
 
                   <div>
                     <label className="mb-1.5 block text-sm font-medium text-slate-700">
-                      Leave Type ID B *
+                      Leave Type B *
                     </label>
-                    <input
+                    <select
                       required
                       value={formData.leave_type_id_b}
                       onChange={(e) =>
                         handleChange("leave_type_id_b", e.target.value)
                       }
-                      placeholder="e.g. CL, PL, SL"
                       className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-[#E42527]"
-                    />
+                    >
+                      <option value="">Select leave type</option>
+                      {leaveTypes.map((leaveType) => {
+                        const id = getLeaveTypeId(leaveType);
+
+                        return id ? (
+                          <option key={id} value={id}>
+                            {getLeaveTypeName(leaveType)}
+                          </option>
+                        ) : null;
+                      })}
+                    </select>
                   </div>
                 </div>
 

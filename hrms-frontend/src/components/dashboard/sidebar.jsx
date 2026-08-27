@@ -243,7 +243,7 @@ export default function Sidebar() {
           E
         </div>
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold text-white">EZlikfe</p>
+          <p className="truncate text-sm font-semibold text-white">EZlife</p>
           <p className="truncate text-[10px] text-slate-400">HRMS</p>
         </div>
       </div>
@@ -291,7 +291,7 @@ export default function Sidebar() {
       </nav>
 
       <div className="shrink-0 border-t border-white/10 p-3">
-        <p className="text-[10px] text-slate-500">© EZlikfe HRMS</p>
+        <p className="text-[10px] text-slate-500">© EZlife HRMS</p>
       </div>
     </aside>
   );

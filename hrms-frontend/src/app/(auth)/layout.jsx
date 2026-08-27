@@ -87,7 +87,7 @@ export default function AuthLayout({ children }) {
           <div className="h-9 w-9 rounded-lg bg-primary flex items-center justify-center font-bold text-lg">
             E
           </div>
-          <span className="text-xl font-semibold tracking-tight">EZlikfe</span>
+          <span className="text-xl font-semibold tracking-tight">EZlife</span>
         </Link>
 
         <div className="space-y-8 relative z-10">
@@ -107,7 +107,7 @@ export default function AuthLayout({ children }) {
         </div>
 
         <p className="text-xs text-slate-400 relative z-10">
-          © 2026 EZlikfe. All rights reserved.
+          © 2026 EZlife. All rights reserved.
         </p>
       </div>
 

@@ -641,11 +641,33 @@ export default function CandidatesPage() {
                     </div>
                     <div>
                       <label className="mb-1.5 block text-sm font-medium text-[#374151]">Aadhaar Number</label>
-                      <input value={formData.aadhaar_number} onChange={(e) => handleChange("aadhaar_number", e.target.value)} className="w-full rounded-md border border-[#d1d5db] px-3 py-2.5 text-sm focus:border-[#E42527] focus:outline-none focus:ring-1 focus:ring-[#E42527]" />
+                      <input
+                        value={formData.aadhaar_number}
+                        onChange={(e) =>
+                          handleChange("aadhaar_number", e.target.value.replace(/\D/g, "").slice(0, 12))
+                        }
+                        inputMode="numeric"
+                        maxLength={12}
+                        pattern="[0-9]{12}"
+                        placeholder="12 digits"
+                        className="w-full rounded-md border border-[#d1d5db] px-3 py-2.5 text-sm focus:border-[#E42527] focus:outline-none focus:ring-1 focus:ring-[#E42527]"
+                      />
                     </div>
                     <div>
                       <label className="mb-1.5 block text-sm font-medium text-[#374151]">PAN Number</label>
-                      <input value={formData.pan_number} onChange={(e) => handleChange("pan_number", e.target.value)} className="w-full rounded-md border border-[#d1d5db] px-3 py-2.5 text-sm focus:border-[#E42527] focus:outline-none focus:ring-1 focus:ring-[#E42527]" />
+                      <input
+                        value={formData.pan_number}
+                        onChange={(e) =>
+                          handleChange(
+                            "pan_number",
+                            e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10)
+                          )
+                        }
+                        maxLength={10}
+                        pattern="[A-Z]{5}[0-9]{4}[A-Z]"
+                        placeholder="ABCDE1234F"
+                        className="w-full rounded-md border border-[#d1d5db] px-3 py-2.5 text-sm uppercase focus:border-[#E42527] focus:outline-none focus:ring-1 focus:ring-[#E42527]"
+                      />
                     </div>
                   </div>
                 )}
