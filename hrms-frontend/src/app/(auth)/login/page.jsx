@@ -544,8 +544,7 @@
 //   );
 // }
 
-export const dynamic = 'force-dynamic';
-export const runtime = 'edge';
+
 
 "use client";
 
@@ -571,6 +570,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { loginSchema } from "@/lib/validations/auth";
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/store/authStore";
+
+export const dynamic = 'force-dynamic';
+export const runtime = 'edge';
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
