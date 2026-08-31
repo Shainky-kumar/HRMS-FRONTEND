@@ -577,6 +577,8 @@ export const runtime = 'edge';
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
+export const dynamic = 'force-dynamic';  // 👈 Ye line ADD karo
+
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
