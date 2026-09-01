@@ -1,0 +1,339 @@
+{
+  "version": 3,
+  "pages404": true,
+  "appType": "app",
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "priority": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    },
+    {
+      "source": "/",
+      "destination": "/login",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/(?:/)?$"
+    }
+  ],
+  "headers": [],
+  "onMatchHeaders": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_global-error",
+      "regex": "^/_global\\-error(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_global\\-error(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/dashboard",
+      "regex": "^/dashboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard(?:/)?$"
+    },
+    {
+      "page": "/dashboard/attendance",
+      "regex": "^/dashboard/attendance(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/attendance(?:/)?$"
+    },
+    {
+      "page": "/dashboard/attendance/alerts",
+      "regex": "^/dashboard/attendance/alerts(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/attendance/alerts(?:/)?$"
+    },
+    {
+      "page": "/dashboard/attendance/biometrics",
+      "regex": "^/dashboard/attendance/biometrics(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/attendance/biometrics(?:/)?$"
+    },
+    {
+      "page": "/dashboard/attendance/breaks",
+      "regex": "^/dashboard/attendance/breaks(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/attendance/breaks(?:/)?$"
+    },
+    {
+      "page": "/dashboard/attendance/comp-off",
+      "regex": "^/dashboard/attendance/comp\\-off(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/attendance/comp\\-off(?:/)?$"
+    },
+    {
+      "page": "/dashboard/attendance/devices",
+      "regex": "^/dashboard/attendance/devices(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/attendance/devices(?:/)?$"
+    },
+    {
+      "page": "/dashboard/attendance/employee-config",
+      "regex": "^/dashboard/attendance/employee\\-config(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/attendance/employee\\-config(?:/)?$"
+    },
+    {
+      "page": "/dashboard/attendance/history",
+      "regex": "^/dashboard/attendance/history(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/attendance/history(?:/)?$"
+    },
+    {
+      "page": "/dashboard/attendance/locations",
+      "regex": "^/dashboard/attendance/locations(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/attendance/locations(?:/)?$"
+    },
+    {
+      "page": "/dashboard/attendance/overtime",
+      "regex": "^/dashboard/attendance/overtime(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/attendance/overtime(?:/)?$"
+    },
+    {
+      "page": "/dashboard/attendance/policy",
+      "regex": "^/dashboard/attendance/policy(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/attendance/policy(?:/)?$"
+    },
+    {
+      "page": "/dashboard/attendance/regularization",
+      "regex": "^/dashboard/attendance/regularization(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/attendance/regularization(?:/)?$"
+    },
+    {
+      "page": "/dashboard/attendance/special-requests",
+      "regex": "^/dashboard/attendance/special\\-requests(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/attendance/special\\-requests(?:/)?$"
+    },
+    {
+      "page": "/dashboard/attendance/today",
+      "regex": "^/dashboard/attendance/today(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/attendance/today(?:/)?$"
+    },
+    {
+      "page": "/dashboard/departments",
+      "regex": "^/dashboard/departments(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/departments(?:/)?$"
+    },
+    {
+      "page": "/dashboard/designations",
+      "regex": "^/dashboard/designations(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/designations(?:/)?$"
+    },
+    {
+      "page": "/dashboard/employees",
+      "regex": "^/dashboard/employees(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/employees(?:/)?$"
+    },
+    {
+      "page": "/dashboard/employment-types",
+      "regex": "^/dashboard/employment\\-types(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/employment\\-types(?:/)?$"
+    },
+    {
+      "page": "/dashboard/hr_letter",
+      "regex": "^/dashboard/hr_letter(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/hr_letter(?:/)?$"
+    },
+    {
+      "page": "/dashboard/leave/leave_type",
+      "regex": "^/dashboard/leave/leave_type(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/leave/leave_type(?:/)?$"
+    },
+    {
+      "page": "/dashboard/leave/leave-applicability",
+      "regex": "^/dashboard/leave/leave\\-applicability(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/leave/leave\\-applicability(?:/)?$"
+    },
+    {
+      "page": "/dashboard/leave/leave-balances",
+      "regex": "^/dashboard/leave/leave\\-balances(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/leave/leave\\-balances(?:/)?$"
+    },
+    {
+      "page": "/dashboard/leave/leave-clubbing",
+      "regex": "^/dashboard/leave/leave\\-clubbing(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/leave/leave\\-clubbing(?:/)?$"
+    },
+    {
+      "page": "/dashboard/leave/leave-policies",
+      "regex": "^/dashboard/leave/leave\\-policies(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/leave/leave\\-policies(?:/)?$"
+    },
+    {
+      "page": "/dashboard/leave/leave-requests",
+      "regex": "^/dashboard/leave/leave\\-requests(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/leave/leave\\-requests(?:/)?$"
+    },
+    {
+      "page": "/dashboard/leave/leave-tiers",
+      "regex": "^/dashboard/leave/leave\\-tiers(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/leave/leave\\-tiers(?:/)?$"
+    },
+    {
+      "page": "/dashboard/leave/leave-tracker",
+      "regex": "^/dashboard/leave/leave\\-tracker(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/leave/leave\\-tracker(?:/)?$"
+    },
+    {
+      "page": "/dashboard/leave/leave-workflows",
+      "regex": "^/dashboard/leave/leave\\-workflows(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/leave/leave\\-workflows(?:/)?$"
+    },
+    {
+      "page": "/dashboard/locations",
+      "regex": "^/dashboard/locations(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/locations(?:/)?$"
+    },
+    {
+      "page": "/dashboard/Onboarding",
+      "regex": "^/dashboard/Onboarding(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/Onboarding(?:/)?$"
+    },
+    {
+      "page": "/dashboard/payroll/components",
+      "regex": "^/dashboard/payroll/components(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/payroll/components(?:/)?$"
+    },
+    {
+      "page": "/dashboard/payroll/deduction-rules",
+      "regex": "^/dashboard/payroll/deduction\\-rules(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/payroll/deduction\\-rules(?:/)?$"
+    },
+    {
+      "page": "/dashboard/payroll/list",
+      "regex": "^/dashboard/payroll/list(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/payroll/list(?:/)?$"
+    },
+    {
+      "page": "/dashboard/payroll/loans",
+      "regex": "^/dashboard/payroll/loans(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/payroll/loans(?:/)?$"
+    },
+    {
+      "page": "/dashboard/payroll/profiles",
+      "regex": "^/dashboard/payroll/profiles(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/payroll/profiles(?:/)?$"
+    },
+    {
+      "page": "/dashboard/payroll/run",
+      "regex": "^/dashboard/payroll/run(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/payroll/run(?:/)?$"
+    },
+    {
+      "page": "/dashboard/payroll/structure",
+      "regex": "^/dashboard/payroll/structure(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/payroll/structure(?:/)?$"
+    },
+    {
+      "page": "/dashboard/settings/holiday",
+      "regex": "^/dashboard/settings/holiday(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/settings/holiday(?:/)?$"
+    },
+    {
+      "page": "/dashboard/settings/timing",
+      "regex": "^/dashboard/settings/timing(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/settings/timing(?:/)?$"
+    },
+    {
+      "page": "/dashboard/settings/working-hours",
+      "regex": "^/dashboard/settings/working\\-hours(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/settings/working\\-hours(?:/)?$"
+    },
+    {
+      "page": "/dashboard/shift-management/add-shift",
+      "regex": "^/dashboard/shift\\-management/add\\-shift(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/shift\\-management/add\\-shift(?:/)?$"
+    },
+    {
+      "page": "/favicon.ico",
+      "regex": "^/favicon\\.ico(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/favicon\\.ico(?:/)?$"
+    },
+    {
+      "page": "/login",
+      "regex": "^/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/login(?:/)?$"
+    },
+    {
+      "page": "/signup",
+      "regex": "^/signup(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/signup(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments",
+    "clientParamParsing": false,
+    "dynamicRSCPrerender": false
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

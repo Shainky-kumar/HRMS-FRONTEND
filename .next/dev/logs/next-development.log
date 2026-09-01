@@ -1,0 +1,13 @@
+{"timestamp":"00:00:01.166","source":"Server","level":"LOG","message":""}
+{"timestamp":"00:00:25.516","source":"Server","level":"LOG","message":"○ Compiling /login ..."}
+{"timestamp":"00:00:28.683","source":"Server","level":"WARN","message":"⚠ The Edge Runtime is deprecated. You can use the \"nodejs\" runtime instead. Learn more: https://nextjs.org/docs/messages/edge-runtime-deprecated"}
+{"timestamp":"00:00:35.013","source":"Server","level":"LOG","message":"○ Compiling /dashboard ..."}
+{"timestamp":"00:06:13.898","source":"Server","level":"LOG","message":"  Reload env: .env.local"}
+{"timestamp":"00:06:14.020","source":"Server","level":"LOG","message":"  Reload env: .env.local"}
+{"timestamp":"00:06:14.167","source":"Server","level":"WARN","message":"⚠ Fast Refresh had to perform a full reload when ./src/lib/api.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload"}
+{"timestamp":"00:06:14.185","source":"Server","level":"LOG","message":"✓ Compiled in 82ms"}
+{"timestamp":"00:07:18.173","source":"Server","level":"LOG","message":"  Reload env: .env.local"}
+{"timestamp":"00:07:18.246","source":"Server","level":"LOG","message":"✓ Compiled in 29ms"}
+{"timestamp":"00:08:04.889","source":"Server","level":"LOG","message":"  Reload env: .env.local"}
+{"timestamp":"00:08:05.048","source":"Server","level":"WARN","message":"⚠ Fast Refresh had to perform a full reload when ./src/lib/api.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload"}
+{"timestamp":"00:08:05.049","source":"Server","level":"LOG","message":"✓ Compiled in 27ms"}

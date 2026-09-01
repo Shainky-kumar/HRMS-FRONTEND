@@ -1,0 +1,56 @@
+{
+  "sorted_middleware": [
+    "/(auth)/login/page"
+  ],
+  "middleware": {},
+  "instrumentation": null,
+  "functions": {
+    "/(auth)/login/page": {
+      "files": [
+        "server/middleware-build-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "required-server-files.js",
+        "server/next-font-manifest.js",
+        "server/server-reference-manifest.js",
+        "server/edge/chunks/ssr/node_modules_0_b2rrl._.js",
+        "server/edge/chunks/ssr/node_modules_next_dist_0p06x8-._.js",
+        "server/edge/chunks/ssr/node_modules_next_dist_esm_141l-6v._.js",
+        "server/edge/chunks/ssr/node_modules_0a8y6em._.js",
+        "server/edge/chunks/ssr/node_modules_next_dist_0f8erim._.js",
+        "server/edge/chunks/ssr/_0la_yfh._.js",
+        "server/edge/chunks/ssr/node_modules_next_dist_esm_api_navigation_00yuu6l.js",
+        "server/edge/chunks/ssr/src_app_(auth)_login_page_jsx_0-6no-h._.js",
+        "server/app/(auth)/login/page_client-reference-manifest.js",
+        "server/edge/chunks/ssr/_next-internal_server_app_(auth)_login_page_actions_0wvbpg0.js",
+        "server/edge/chunks/ssr/node_modules_0ru64j0._.js",
+        "server/edge/chunks/ssr/_1f_dg1h._.js",
+        "server/edge/chunks/ssr/node_modules_next_dist_1sjevua._.js",
+        "server/edge/chunks/ssr/node_modules_next_dist_compiled_0czwz5q._.js",
+        "server/edge/chunks/ssr/[root-of-the-server]__00mctur._.js",
+        "server/edge/chunks/ssr/node_modules_0gzi5su._.js",
+        "server/edge/chunks/ssr/node_modules_next_dist_0runq7v._.js",
+        "server/edge/chunks/ssr/[root-of-the-server]__20ehj7s._.js",
+        "server/edge/chunks/ssr/turbopack-node_modules_next_dist_esm_build_templates_edge-wrapper_1w7bl33.js",
+        "server/app/(auth)/login/page/react-loadable-manifest.js"
+      ],
+      "name": "app/(auth)/login/page",
+      "page": "/(auth)/login/page",
+      "entrypoint": "server/edge/chunks/ssr/turbopack-node_modules_next_dist_esm_build_templates_edge-wrapper_1w7bl33.js",
+      "matchers": [
+        {
+          "regexp": "^/login(?:/)?$",
+          "originalSource": "/login"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "t8f47rr8CSuJyqnZGNlO6",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "iiiBTQNFydIE8yEgvmf/jJBl4dmRg9aZY0KrDG//G/0=",
+        "__NEXT_PREVIEW_MODE_ID": "de44b33b8d3adff445f092d6f55f74e3",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "b35fabec5562a090329c95dab55996d60c9f2b335b1e97cf9501d3ac3a49993b",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "08135d4b469fdd2b0fa65b72d18a3dcc978882553a5a2654a65235da4c221b1c"
+      }
+    }
+  }
+}
